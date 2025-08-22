@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art by Willow - Equine Art Gallery</title>
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .mobile-menu.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .mobile-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        .mobile-nav-menu {
+            position: fixed;
+            top: 70px;
+            right: -100%;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: white;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+            transition: right 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .mobile-nav-menu.active {
+            right: 0;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 30px 0;
+        }
+
+        .mobile-nav-links li {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: 20px 30px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover {
+            background: #f8f9fa;
+            color: #667eea;
+            padding-left: 40px;
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 998;
+        }
+
+        .mobile-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            margin-top: 80px;
+        }
+
+        section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+            background: white;
+            padding: 50px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 {
+            color: #2c3e50;
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero .subtitle {
+            color: #7f8c8d;
+            font-size: 1.3em;
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .cta-btn.secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* Share Link Section */
+        .share-link-section {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .share-link-section h2 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+        }
+
+        .share-link-section p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+
+        .link-copy-container {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .website-link {
+            flex: 1;
+            font-family: monospace;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .copy-btn {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+        }
+
+        .social-share {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn.facebook {
+            background: #3b5998;
+        }
+
+        .social-btn.twitter {
+            background: #1da1f2;
+        }
+
+        .social-btn.instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        .social-btn.email {
+            background: #666;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 1.1em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .art-piece {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .art-piece:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .art-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .art-image img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .art-piece:hover .art-image img {
+            transform: scale(1.05);
+        }
+
+        .art-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .order-form {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        select, textarea, input[type="file"], input[type="email"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        select:focus, textarea:focus, input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .price-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 15px 0;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .upload-area.dragover {
+            border-color: #27ae60;
+            background: #e8f5e8;
+        }
+
+        .order-btn, .paypal-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .order-btn:hover, .paypal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .paypal-btn {
+            background: linear-gradient(135deg, #ffc439 0%, #ff7730 100%);
+        }
+
+        /* Blog Section */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .blog-post {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .blog-post:hover {
+            transform: translateY(-5px);
+        }
+
+        .blog-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .blog-post:hover .blog-image img {
+            transform: scale(1.05);
+        }
+
+        .blog-content {
+            padding: 25px;
+        }
+
+        .blog-date {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .blog-title {
+            color: #2c3e50;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .blog-excerpt {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .read-more {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .read-more:hover {
+            color: #764ba2;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .testimonial {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            position: relative;
+            border-left: 4px solid #667eea;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .author-info h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .author-info p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .stars {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .newsletter h2 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        .newsletter p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 15px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+        }
+
+        .newsletter-btn {
+            padding: 15px 30px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #667eea;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: flex;
+            }
+            
+            .container {
+                padding: 10px;
+                margin-top: 60px;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2em;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-form input {
+                min-width: 100%;
+            }
+
+            .testimonials {
+                padding: 40px 20px;
+            }
+
+            .newsletter {
+                padding: 40px 20px;
+            }
+
+            .link-copy-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .social-share {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-nav-menu {
+                width: 100%;
+                right: -100%;
+            }
+
+            .mobile-nav-menu.active {
+                right: 0;
+            }
+        }
+
+        /* Payment Integration Styles */
+        .payment-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .payment-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">Art by Willow</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#share">Share</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#blog">Process</a></li>
+                <li><a href="#testimonials">Reviews</a></li>
+                <li><a href="#newsletter">Newsletter</a></li>
+            </ul>
+            <div class="mobile-menu" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-nav-menu" id="mobile-nav-menu">
+        <ul class="mobile-nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#share">Share</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#gallery">Prints</a></li>
+            <li><a href="#gallery">Originals</a></li>
+            <li><a href="#blog">Process</a></li>
+            <li><a href="#testimonials">Reviews</a></li>
+            <li><a href="#newsletter">Newsletter</a></li>
+            <li><a href="mailto:willow@artbywillow.com">Contact</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <h1>Art by Willow</h1>
+            <p class="subtitle">Capturing the soul and spirit of horses through realistic portraiture</p>
+            <div class="cta-buttons">
+                <a href="#gallery" class="cta-btn">Browse Gallery</a>
+                <a href="#blog" class="cta-btn secondary">View Process</a>
+            </div>
+        </section>
+
+        <!-- Share Link Section -->
+        <section id="share" class="share-link-section">
+            <h2>Share Willow's Art Studio</h2>
+            <p>Share this link with horse lovers and art enthusiasts to let them browse and order custom equine portraits!</p>
+            
+            <div class="link-copy-container">
+                <input type="text" class="website-link" value="https://artbywillow.github.io/yoursartbywillow/" readonly id="website-url">
+                <button class="copy-btn" onclick="copyWebsiteLink()">Copy Link</button>
+            </div>
+            
+            <div class="social-share">
+                <a href="#" class="social-btn facebook" onclick="shareOnFacebook()">Share on Facebook</a>
+                <a href="#" class="social-btn twitter" onclick="shareOnTwitter()">Share on Twitter</a>
+                <a href="#" class="social-btn instagram" onclick="shareOnInstagram()">Share on Instagram</a>
+                <a href="#" class="social-btn email" onclick="shareViaEmail()">Share via Email</a>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery">
+            <div class="section-header">
+                <h2>Equine Art Collection</h2>
+                <p>Beautiful horse portraits available as custom prints in multiple sizes</p>
+            </div>
+
+            <div class="gallery">
+                <!-- Art Piece 1 - Dark Bay Horse Head -->
+                <div class="art-piece">
+                    <div class="art-image">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bc8fe0f7-acdd-4254-868a-c3faa9454a07.png" alt="Realistic oil painting portrait of a dark bay horse head with detailed features, rich brown and black coloring, and expressive dark eyes against a textured brown background" />
+                        <div class="art-title">Majestic Spirit</div>
+                    </div>
+                    <div class="order-form">
+                        <form class="print-order-form" data-art-name="Majestic Spirit">
+                            <div class="form-group">
+                                <label for="size1">Print Size:</label>
+                                <select id="size1" name="size" required>
+                                    <option value="">Select Size</option>
+                                    <option value="8x10" data-price="45">8" x 10" - $45</option>
+                                    <option value="11x14" data-price="65">11" x 14" - $65</option>
+                                    <option value="16x20" data-price="95">16" x 20" - $95</option>
+                                    <option value="18x24" data-price="125">18" x 24" - $125</option>
+                                    <option value="24x36" data-price="185">24" x 36" - $185</option>
+                                </select>
+                            </div>
+                            
+                            <div class="price-display">Price: $<span class="price-amount">0</span></div>
+                            
+                            <div class="form-group">
+                                <label for="customization1">Customization Requests:</label>
+                                <textarea id="customization1" name="customization" placeholder="Would you like any color adjustments, different horse markings, or special modifications?"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reference1">Reference Photos (optional):</label>
+                                <div class="upload-area">
+                                    <input type="file" id="reference1" name="reference" multiple accept="image/*">
+                                    <p>Upload photos of your horse for custom portrait work</p>
+                                    <small>Accepted formats: JPG, PNG, GIF (Max 5MB each)</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="customer-info1">Your Contact Information:</label>
+                                <textarea id="customer-info1" name="customer-info" placeholder="Name, Email, Phone, Shipping Address..." required></textarea>
+                            </div>
+
+                            <div class="payment-section">
+                                <h4>Payment Options:</h4>
+                                <div class="payment-options">
+                                    <div class="payment-option active" data-payment="custom">Custom Order</div>
+                                    <div class="payment-option" data-payment="instant">Instant Payment</div>
+                                </div>
+                                <button type="submit" class="order-btn">Place Custom Order</button>
+                                <div class="paypal-button" style="display: none;"></div>
+                            </div>
+                        </form>
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Processing your order...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Art Piece 2 - Chestnut Horse Full Body -->
+                <div class="art-piece">
+                    <div class="art-image">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0b65be52-8141-4d00-9423-620415674d5f.png" alt="Beautiful realistic painting of a chestnut horse standing in profile, showing full body with detailed muscular definition, flowing mane and tail, and warm brown tones" />
+                        <div class="art-title">Noble Stance</div>
+                    </div>
+                    <div class="order-form">
+                        <form class="print-order-form" data-art-name="Noble Stance">
+                            <div class="form-group">
+                                <label for="size2">Print Size:</label>
+                                <select id="size2" name="size" required>
+                                    <option value="">Select Size</option>
+                                    <option value="8x10" data-price="45">8" x 10" - $45</option>
+                                    <option value="11x14" data-price="65">11" x 14" - $65</option>
+                                    <option value="16x20" data-price="95">16" x 20" - $95</option>
+                                    <option value="18x24" data-price="125">18" x 24" - $125</option>
+                                    <option value="24x36" data-price="185">24" x 36" - $185</option>
+                                </select>
+                            </div>
+                            
+                            <div class="price-display">Price: $<span class="price-amount">0</span></div>
+                            
+                            <div class="form-group">
+                                <label for="customization2">Customization Requests:</label>
+                                <textarea id="customization2" name="customization" placeholder="Would you like any color adjustments, different horse markings, or special modifications?"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reference2">Reference Photos (optional):</label>
+                                <div class="upload-area">
+                                    <input type="file" id="reference2" name="reference" multiple accept="image/*">
+                                    <p>Upload photos of your horse for custom portrait work</p>
+                                    <small>Accepted formats: JPG, PNG, GIF (Max 5MB each)</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="customer-info2">Your Contact Information:</label>
+                                <textarea id="customer-info2" name="customer-info" placeholder="Name, Email, Phone, Shipping Address..." required></textarea>
+                            </div>
+
+                            <div class="payment-section">
+                                <h4>Payment Options:</h4>
+                                <div class="payment-options">
+                                    <div class="payment-option active" data-payment="custom">Custom Order</div>
+                                    <div class="payment-option" data-payment="instant">Instant Payment</div>
+                                </div>
+                                <button type="submit" class="order-btn">Place Custom Order</button>
+                                <div class="paypal-button" style="display: none;"></div>
+                            </div>
+                        </form>
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Processing your order...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Art Piece 3 - Dark Horse with Halter -->
+                <div class="art-piece">
+                    <div class="art-image">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/28948e2e-5cff-45eb-8891-bb2319b1343d.png" alt="Stunning realistic portrait of a dark bay horse wearing a halter, painted with rich burgundy and brown tones, showing incredible detail in the facial features and expression" />
+                        <div class="art-title">Gentle Giant</div>
+                    </div>
+                    <div class="order-form">
+                        <form class="print-order-form" data-art-name="Gentle Giant">
+                            <div class="form-group">
+                                <label for="size3">Print Size:</label>
+                                <select id="size3" name="size" required>
+                                    <option value="">Select Size</option>
+                                    <option value="8x10" data-price="45">8" x 10" - $45</option>
+                                    <option value="11x14" data-price="65">11" x 14" - $65</option>
+                                    <option value="16x20" data-price="95">16" x 20" - $95</option>
+                                    <option value="18x24" data-price="125">18" x 24" - $125</option>
+                                    <option value="24x36" data-price="185">24" x 36" - $185</option>
+                                </select>
+                            </div>
+                            
+                            <div class="price-display">Price: $<span class="price-amount">0</span></div>
+                            
+                            <div class="form-group">
+                                <label for="customization3">Customization Requests:</label>
+                                <textarea id="customization3" name="customization" placeholder="Would you like any color adjustments, different horse markings, or special modifications?"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reference3">Reference Photos (optional):</label>
+                                <div class="upload-area">
+                                    <input type="file" id="reference3" name="reference" multiple accept="image/*">
+                                    <p>Upload photos of your horse for custom portrait work</p>
+                                    <small>Accepted formats: JPG, PNG, GIF (Max 5MB each)</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="customer-info3">Your Contact Information:</label>
+                                <textarea id="customer-info3" name="customer-info" placeholder="Name, Email, Phone, Shipping Address..." required></textarea>
+                            </div>
+
+                            <div class="payment-section">
+                                <h4>Payment Options:</h4>
+                                <div class="payment-options">
+                                    <div class="payment-option active" data-payment="custom">Custom Order</div>
+                                    <div class="payment-option" data-payment="instant">Instant Payment</div>
+                                </div>
+                                <button type="submit" class="order-btn">Place Custom Order</button>
+                                <div class="paypal-button" style="display: none;"></div>
+                            </div>
+                        </form>
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Processing your order...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Art Piece 4 - Palomino Horse Head -->
+                <div class="art-piece">
+                    <div class="art-image">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/367432ee-02a1-4888-a72e-bbce0881432d.png" alt="Exquisite realistic painting of a palomino horse head with golden coat, flowing light-colored mane, and gentle expression, showcasing masterful use of warm earth tones" />
+                        <div class="art-title">Golden Grace</div>
+                    </div>
+                    <div class="order-form">
+                        <form class="print-order-form" data-art-name="Golden Grace">
+                            <div class="form-group">
+                                <label for="size4">Print Size:</label>
+                                <select id="size4" name="size" required>
+                                    <option value="">Select Size</option>
+                                    <option value="8x10" data-price="45">8" x 10" - $45</option>
+                                    <option value="11x14" data-price="65">11" x 14" - $65</option>
+                                    <option value="16x20" data-price="95">16" x 20" - $95</option>
+                                    <option value="18x24" data-price="125">18" x 24" - $125</option>
+                                    <option value="24x36" data-price="185">24" x 36" - $185</option>
+                                </select>
+                            </div>
+                            
+                            <div class="price-display">Price: $<span class="price-amount">0</span></div>
+                            
+                            <div class="form-group">
+                                <label for="customization4">Customization Requests:</label>
+                                <textarea id="customization4" name="customization" placeholder="Would you like any color adjustments, different horse markings, or special modifications?"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reference4">Reference Photos (optional):</label>
+                                <div class="upload-area">
+                                    <input type="file" id="reference4" name="reference" multiple accept="image/*">
+                                    <p>Upload photos of your horse for custom portrait work</p>
+                                    <small>Accepted formats: JPG, PNG, GIF (Max 5MB each)</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="customer-info4">Your Contact Information:</label>
+                                <textarea id="customer-info4" name="customer-info" placeholder="Name, Email, Phone, Shipping Address..." required></textarea>
+                            </div>
+
+                            <div class="payment-section">
+                                <h4>Payment Options:</h4>
+                                <div class="payment-options">
+                                    <div class="payment-option active" data-payment="custom">Custom Order</div>
+                                    <div class="payment-option" data-payment="instant">Instant Payment</div>
+                                </div>
+                                <button type="submit" class="order-btn">Place Custom Order</button>
+                                <div class="paypal-button" style="display: none;"></div>
+                            </div>
+                        </form>
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Processing your order...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog">
+            <div class="section-header">
+                <h2>Behind the Art</h2>
+                <p>Discover the artistic process behind capturing the essence of horses in paint</p>
+            </div>
+
+            <div class="blog-grid">
+                <article class="blog-post">
+                    <div class="blog-image">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/27e6d449-311d-42ba-8fd1-2c106cb7b754.png" alt="Artist studio workspace with easel displaying horse painting in progress, paint brushes, palette with earth tones, and reference photos of horses" />
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-date">December 15, 2024</div>
+                        <h3 class="blog-title">Capturing the Soul of Horses</h3>
+                        <p class="blog-excerpt">The journey of painting equine portraits requires understanding both anatomy and spirit. Learn about my process of bringing horses to life on canvas through careful observation and artistic technique.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </article>
+
+                <article class="blog-post">
+                    <div class="blog-image">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/92ff719d-d228-47a2-abf5-085fd38aeb97.png" alt="Close-up of artist hands mixing warm brown and chestnut paint colors on palette, showing the color mixing process for realistic horse coat painting" />
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-date">December 10, 2024</div>
+                        <h3 class="blog-title">Color Theory for Equine Art</h3>
+                        <p class="blog-excerpt">Mastering the subtle color variations in horse coats - from deep bays to golden chestnuts. Understanding undertones and how light affects equine coloring in portraiture.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </article>
+
+                <article class="blog-post">
+                    <div class="blog-image">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a9b6b932-2a0e-47e7-b683-2ea19fffb3ea.png" alt="Live horse posing session in stable with artist sketching, showing the reference gathering process for realistic equine portrait painting" />
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-date">December 5, 2024</div>
+                        <h3 class="blog-title">Working with Live Models</h3>
+                        <p class="blog-excerpt">The challenges and rewards of painting from life. How spending time with horses informs better portraits and captures their unique personalities and expressions.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </article>
+
+                <article class="blog-post">
+                    <div class="blog-image">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/29772710-fa10-436c-a0b6-6bff934689e8.png" alt="Detailed comparison showing horse anatomy study sketches alongside finished realistic horse painting, demonstrating the study process" />
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-date">November 28, 2024</div>
+                        <h3 class="blog-title">Understanding Equine Anatomy</h3>
+                        <p class="blog-excerpt">The foundation of realistic horse painting lies in understanding anatomy. From muscle structure to proportions, learn how anatomical knowledge creates compelling equine art.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials">
+            <div class="testimonials">
+                <div class="section-header">
+                    <h2>What Horse Lovers Say</h2>
+                    <p>Real reviews from customers who've commissioned beautiful equine portraits</p>
+                </div>
+
+                <div class="testimonials-grid">
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p class="testimonial-text">"Willow perfectly captured my mare's personality! The painting shows every detail I love about her - from her gentle eyes to her flowing mane. It's hanging in my living room now."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">SM</div>
+                            <div class="author-info">
+                                <h4>Sarah Mitchell</h4>
+                                <p>Horse Owner, Kentucky</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p class="testimonial-text">"I commissioned a portrait of my late gelding and Willow brought him back to life on canvas. The emotional connection is incredible - I tear up every time I see it."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">DJ</div>
+                            <div class="author-info">
+                                <h4>David Johnson</h4>
+                                <p>Retired Trainer, Texas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p class="testimonial-text">"The attention to detail is amazing! You can see every muscle, every highlight in the coat. This isn't just a painting - it's a work of art that captures the spirit of my horse."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">ER</div>
+                            <div class="author-info">
+                                <h4>Emily Rodriguez</h4>
+                                <p>Equestrian, California</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p class="testimonial-text">"Professional quality and fast turnaround. The print arrived perfectly packaged and the colors are even more vibrant in person. Highly recommend!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">MK</div>
+                            <div class="author-info">
+                                <h4>Michael Kim</h4>
+                                <p>Barn Owner, Florida</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p class="testimonial-text">"I ordered prints for our entire barn family. Each horse's unique personality shines through. Willow has an incredible gift for equine art."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">AL</div>
+                            <div class="author-info">
+                                <h4>Amanda Lee</h4>
+                                <p>Riding Instructor, Colorado</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p class="testimonial-text">"The custom modifications Willow made based on my photos were perfect. She captured my horse's exact markings and coloring beautifully."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">TC</div>
+                            <div class="author-info">
+                                <h4>Thomas Chen</h4>
+                                <p>Horse Breeder, Montana</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Section -->
+        <section id="newsletter">
+            <div class="newsletter">
+                <h2>Stay Connected</h2>
+                <p>Get exclusive access to new equine artwork, behind-the-scenes content, and special offers for horse lovers</p>
+                <form class="newsletter-form" id="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+                <div style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">
+                    <p>🐴 Exclusive previews of new horse artwork</p>
+                    <p>🎨 Artist process videos and tutorials</p>
+                    <p>💫 Special discounts for equine enthusiasts</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="alert success" id="success-alert">
+            <strong>Success!</strong> <span class="alert-message">Your request has been processed successfully.</span>
+        </div>
+
+        <div class="alert error" id="error-alert">
+            <strong>Error!</strong> <span class="alert-message">There was a problem processing your request.</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#gallery">Gallery</a>
+                <a href="#blog">Process</a>
+                <a href="#testimonials">Reviews</a>
+                <a href="#newsletter">Newsletter</a>
+                <a href="mailto:willow@artbywillow.com">Contact</a>
+            </div>
+            <p>© 2024 Art by Willow. All rights reserved. | Equine art with passion and precision</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+
+            // Toggle mobile menu
+            mobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.toggle('active');
+                mobileNavMenu.classList.toggle('active');
+                mobileOverlay.classList.toggle('active');
+                document.body.style.overflow = mobileNavMenu.classList.contains('active') ? 'hidden' : '';
+            });
+
+            // Close mobile menu when overlay is clicked
+            mobileOverlay.addEventListener('click', function() {
+                closeMobileMenu();
+            });
+
+            // Close mobile menu when a link is clicked
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    closeMobileMenu();
+                });
+            });
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('active');
+                mobileNavMenu.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            // Close mobile menu on window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    closeMobileMenu();
+                }
+            });
+
+            // Smooth scrolling for navigation links
+            const navLinks = document.querySelectorAll('.nav-links a, .cta-btn, .mobile-nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Handle size selection and price updates
+            const sizeSelects = document.querySelectorAll('select[name="size"]');
+            
+            sizeSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const price = selectedOption.getAttribute('data-price') || 0;
+                    const priceDisplay = this.closest('.order-form').querySelector('.price-amount');
+                    priceDisplay.textContent = price;
+                    
+                    // Update PayPal button if instant payment is selected
+                    const form = this.closest('.print-order-form');
+                    const paymentSection = form.querySelector('.payment-section');
+                    const activePayment = paymentSection.querySelector('.payment-option.active');
+                    if (activePayment && activePayment.dataset.payment === 'instant' && price > 0) {
+                        initializePayPalButton(form, price);
+                    }
+                });
+            });
+
+            // Payment option selection
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            paymentOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const container = this.closest('.payment-section');
+                    container.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const form = this.closest('.print-order-form');
+                    const orderBtn = container.querySelector('.order-btn');
+                    const paypalContainer = container.querySelector('.paypal-button');
+                    
+                    if (this.dataset.payment === 'instant') {
+                        orderBtn.style.display = 'none';
+                        paypalContainer.style.display = 'block';
+                        
+                        const sizeSelect = form.querySelector('select[name="size"]');
+                        const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+                        const price = selectedOption.getAttribute('data-price');
+                        
+                        if (price && price > 0) {
+                            initializePayPalButton(form, price);
+                        }
+                    } else {
+                        orderBtn.style.display = 'block';
+                        paypalContainer.style.display = 'none';
+                        paypalContainer.innerHTML = '';
+                    }
+                });
+            });
+
+            // Handle file uploads with drag and drop
+            const uploadAreas = document.querySelectorAll('.upload-area');
+            
+            uploadAreas.forEach(area => {
+                const fileInput = area.querySelector('input[type="file"]');
+                
+                area.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+                
+                area.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                });
+                
+                area.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    fileInput.files = files;
+                    updateFileDisplay(fileInput);
+                });
+                
+                fileInput.addEventListener('change', function() {
+                    updateFileDisplay(this);
+                });
+            });
+
+            // Handle form submissions
+            const forms = document.querySelectorAll('.print-order-form');
+            
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleOrderSubmission(this);
+                });
+            });
+
+            // Newsletter form
+            const newsletterForm = document.getElementById('newsletter-form');
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                
+                // Simulate newsletter signup
+                setTimeout(() => {
+                    showAlert('success', `Thank you for subscribing! Welcome to our equine art community.`);
+                    this.reset();
+                }, 1000);
+            });
+        });
+
+        // Share functionality
+        function copyWebsiteLink() {
+            const linkInput = document.getElementById('website-url');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                showAlert('success', 'Website link copied to clipboard!');
+            } catch (err) {
+                showAlert('error', 'Could not copy link. Please select and copy manually.');
+            }
+        }
+
+        function shareOnFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Check out these amazing equine art portraits!');
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+        }
+
+        function shareOnTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Beautiful horse portraits by a talented artist! 🐴🎨');
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+        }
+
+        function shareOnInstagram() {
+            copyWebsiteLink();
+            showAlert('success', 'Link copied! You can now paste it in your Instagram story or bio.');
+        }
+
+        function shareViaEmail() {
+            const subject = encodeURIComponent('Beautiful Equine Art Portraits');
+            const body = encodeURIComponent(`Check out these stunning horse paintings: ${window.location.href}`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+
+        function initializePayPalButton(form, price) {
+            const paypalContainer = form.querySelector('.paypal-button');
+            const artName = form.getAttribute('data-art-name');
+            
+            paypalContainer.innerHTML = '';
+            
+            if (typeof paypal !== 'undefined') {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: price
+                                },
+                                description: `Equine Art Print: ${artName}`
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            showAlert('success', `Payment successful! Order ID: ${details.id}`);
+                            
+                            const formData = new FormData(form);
+                            const orderData = {
+                                artPiece: artName,
+                                size: formData.get('size'),
+                                customization: formData.get('customization'),
+                                customerInfo: formData.get('customer-info'),
+                                paymentId: details.id,
+                                amount: price,
+                                timestamp: new Date().toISOString()
+                            };
+                            
+                            console.log('Paid Order:', orderData);
+                            form.reset();
+                            form.querySelector('.price-amount').textContent = '0';
+                        });
+                    },
+                    onError: function(err) {
+                        console.error('PayPal Error:', err);
+                        showAlert('error', 'Payment failed. Please try again or contact us directly.');
+                    }
+                }).render(paypalContainer);
+            } else {
+                paypalContainer.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">PayPal integration requires configuration. Please contact us for payment.</p>';
+            }
+        }
+
+        function updateFileDisplay(fileInput) {
+            const uploadArea = fileInput.closest('.upload-area');
+            const fileCount = fileInput.files.length;
+            
+            if (fileCount > 0) {
+                const fileText = uploadArea.querySelector('p');
+                fileText.textContent = `${fileCount} file(s) selected`;
+                uploadArea.style.backgroundColor = '#e8f5e8';
+                uploadArea.style.borderColor = '#27ae60';
+            }
+        }
+
+        function handleOrderSubmission(form) {
+            const formData = new FormData(form);
+            const artName = form.getAttribute('data-art-name');
+            const loadingDiv = form.nextElementSibling;
+            
+            // Show loading state
+            form.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            
+            // Simulate order processing
+            setTimeout(() => {
+                const orderData = {
+                    artPiece: artName,
+                    size: formData.get('size'),
+                    customization: formData.get('customization'),
+                    customerInfo: formData.get('customer-info'),
+                    files: formData.getAll('reference'),
+                    timestamp: new Date().toISOString()
+                };
+                
+                console.log('New Custom Order:', orderData);
+                showAlert('success', 'Custom order submitted successfully! Willow will contact you within 24 hours.');
+                
+                // Reset form
+                form.reset();
+                form.querySelector('.price-amount').textContent = '0';
+                
+                const uploadAreas = form.querySelectorAll('.upload-area');
+                uploadAreas.forEach(area => {
+                    const fileText = area.querySelector('p');
+                    fileText.textContent = 'Upload photos of your horse for custom portrait work';
+                    area.style.backgroundColor = '#f8f9fa';
+                    area.style.borderColor = '#bdc3c7';
+                });
+                
+                loadingDiv.style.display = 'none';
+                form.style.display = 'block';
+                
+            }, 2000);
+        }
+
+        function showAlert(type, message) {
+            const alertDiv = document.getElementById(type + '-alert');
+            const messageSpan = alertDiv.querySelector('.alert-message');
+            messageSpan.textContent = message;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+            
+            alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 25px rgba(0,0,0,0.15)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            }
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.blog-post, .testimonial, .art-piece');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
+
